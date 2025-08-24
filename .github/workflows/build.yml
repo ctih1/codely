@@ -85,8 +85,8 @@ jobs:
           mix deps.get
           mix phx.digest
       - run: |
-          set MIX_ENV=prod 
-          mix release
+          $env:MIX_ENV="prod"
+          mix release --env prod
       - uses: actions/upload-artifact@v4
         with:
           name: codely-windows
