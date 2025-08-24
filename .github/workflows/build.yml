@@ -42,6 +42,7 @@ jobs:
         with:
           elixir-version: "1.18.4-otp-27"
           otp-version: "27"
+          precompiled: false
       - run: mix local.hex --force && mix local.rebar --force
       - uses: actions/cache@v3
         with:
