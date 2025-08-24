@@ -134,21 +134,25 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: codely-linux-x64
-          path: artifacts
+          path: artifacts/linux-x64
       - uses: actions/download-artifact@v4
         with:
           name: codely-linux-arm64
-          path: artifacts
+          path: artifacts/linux-arm64
       - uses: actions/download-artifact@v4
         with:
           name: codely-windows
-          path: artifacts
+          path: artifacts/windows
       - uses: actions/download-artifact@v4
         with:
           name: codely-macos
-          path: artifacts
+          path: artifacts/macos
       - run: |
-          ls -lR
+          zip -r artifacts/codely-linux-x64.zip artifacts/linux-x64
+          zip -r artifacts/codely-linux-arm64.zip artifacts/linux-arm64
+          zip -r artifacts/codely-windows.zip artifacts/windows
+          zip -r artifacts/codely-macos.zip artifacts/macos
+      - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag ${{ steps.get_time.outputs.tag_name }}
