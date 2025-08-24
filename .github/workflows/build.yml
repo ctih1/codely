@@ -134,36 +134,32 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: codely-linux-x64
-          path: artifacts/linux-x64
+          path: artifacts
       - uses: actions/download-artifact@v4
         with:
           name: codely-linux-arm64
-          path: artifacts/linux-arm64
+          path: artifacts
       - uses: actions/download-artifact@v4
         with:
           name: codely-windows
-          path: artifacts/windows
+          path: artifacts
       - uses: actions/download-artifact@v4
         with:
           name: codely-macos
-          path: artifacts/macos
+          path: artifacts
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag ${{ steps.get_time.outputs.tag_name }}
           git push origin ${{ steps.get_time.outputs.tag_name }}
-      - run: |
-          mv artifacts/linux-x64/codely artifacts/linux-x64/codely-linux-x64
-          mv artifacts/linux-arm64/codely artifacts/linux-arm64/codely-linux-arm64
-          mv artifacts/macos/codely artifacts/macos/codely-macos
       - uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ steps.get_time.outputs.tag_name }}
           tag_name: ${{ steps.get_time.outputs.tag_name }}
           files: |
-            artifacts/linux-x64/codely-linux-x64
-            artifacts/linux-arm64/codely-linux-arm64
-            artifacts/windows/codely
-            artifacts/macos/codely-macos
+            artifacts/codely-linux-x64.zip
+            artifacts/codely-linux-arm64.zip
+            artifacts/codely-windows.zip
+            artifacts/codely-macos.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
