@@ -148,6 +148,7 @@ jobs:
           name: codely-macos
           path: artifacts
       - run: |
+          ls -lR
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag ${{ steps.get_time.outputs.tag_name }}
