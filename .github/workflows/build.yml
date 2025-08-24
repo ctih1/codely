@@ -28,7 +28,7 @@ jobs:
       - run: |
           cd assets
           npm ci
-          npm run deploy
+          npm run build
           cd ..
           mix phx.digest
       - run: MIX_ENV=prod mix release
@@ -59,7 +59,7 @@ jobs:
       - run: |
           cd assets
           npm ci
-          npm run deploy
+          npm run build
           cd ..
           mix phx.digest
       - run: MIX_ENV=prod mix release
@@ -90,7 +90,7 @@ jobs:
       - run: |
           cd assets
           npm ci
-          npm run deploy
+          npm run build
           cd ..
           mix phx.digest
       - run: MIX_ENV=prod mix release
@@ -121,7 +121,7 @@ jobs:
       - run: |
           cd assets
           npm ci
-          npm run deploy
+          npm run build
           cd ..
           mix phx.digest
       - run: MIX_ENV=prod mix release
