@@ -112,7 +112,9 @@ jobs:
       - run: |
           mix deps.get
           mix phx.digest
-      - run: MIX_ENV=prod mix release
+      - run: |
+          set MIX_ENV=prod 
+          mix release
       - uses: actions/upload-artifact@v4
         with:
           name: codely-macos
