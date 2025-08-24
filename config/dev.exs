@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :codely, Codely.Repo,
-  username: "codely",
-  password: "codely",
+  username: System.get_env("DB_USER"),
+  password: System.get_env("DB_PASS"),
   hostname: "localhost",
   database: "codely_dev",
   stacktrace: true,
@@ -19,7 +19,7 @@ config :codely, Codely.Repo,
 config :codely, CodelyWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
+  http: [ip: {192, 168, 32, 144}, port: String.to_integer(System.get_env("PORT") || "4000")],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -61,6 +61,16 @@ config :codely, CodelyWeb.Endpoint,
       ~r"priv/gettext/.*(po)$",
       ~r"lib/codely_web/(?:controllers|live|components|router)/?.*\.(ex|heex)$"
     ]
+  ]
+
+config :tailwind,
+  version: "4.1.7",
+  codely: [
+    args: ~w(
+      --input=assets/css/app.css
+      --output=priv/static/assets/css/app.css
+    ),
+    cd: Path.expand("..", __DIR__)
   ]
 
 # Enable dev routes for dashboard and mailbox

@@ -1,0 +1,179 @@
+name: Cross-Platform Phoenix Release Build & Upload
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-linux-x64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.4"
+          otp-version: "26.3"
+      - run: mix local.hex --force && mix local.rebar --force
+      - uses: actions/cache@v3
+        with:
+          path: |
+            _build
+            deps
+            assets/node_modules
+          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - run: |
+          cd assets
+          npm ci
+          npm run deploy
+          cd ..
+          mix phx.digest
+      - run: MIX_ENV=prod mix release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codely-linux-x64
+          path: _build/prod/rel/codely
+
+  build-linux-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.4"
+          otp-version: "26.3"
+      - run: mix local.hex --force && mix local.rebar --force
+      - uses: actions/cache@v3
+        with:
+          path: |
+            _build
+            deps
+            assets/node_modules
+          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - run: |
+          cd assets
+          npm ci
+          npm run deploy
+          cd ..
+          mix phx.digest
+      - run: MIX_ENV=prod MIX_TARGET=arm64 mix release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codely-linux-arm64
+          path: _build/prod/rel/codely
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.4"
+          otp-version: "26.3"
+      - run: mix local.hex --force && mix local.rebar --force
+      - uses: actions/cache@v3
+        with:
+          path: |
+            _build
+            deps
+            assets/node_modules
+          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - run: |
+          cd assets
+          npm ci
+          npm run deploy
+          cd ..
+          mix phx.digest
+      - run: MIX_ENV=prod mix release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codely-windows
+          path: _build/prod/rel/codely
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.4"
+          otp-version: "26.3"
+      - run: mix local.hex --force && mix local.rebar --force
+      - uses: actions/cache@v3
+        with:
+          path: |
+            _build
+            deps
+            assets/node_modules
+          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - run: |
+          cd assets
+          npm ci
+          npm run deploy
+          cd ..
+          mix phx.digest
+      - run: MIX_ENV=prod mix release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codely-macos
+          path: _build/prod/rel/codely
+
+  release:
+    name: 🚀 Publish GitHub Release
+    needs: [build-linux-x64, build-linux-arm64, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get timestamp for tag
+        id: get_time
+        run: echo "tag_name=$(date +'%Y-%m-%d-%H-%M')" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: codely-linux-x64
+          path: artifacts/linux-x64
+      - uses: actions/download-artifact@v4
+        with:
+          name: codely-linux-arm64
+          path: artifacts/linux-arm64
+      - uses: actions/download-artifact@v4
+        with:
+          name: codely-windows
+          path: artifacts/windows
+      - uses: actions/download-artifact@v4
+        with:
+          name: codely-macos
+          path: artifacts/macos
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.get_time.outputs.tag_name }}
+          git push origin ${{ steps.get_time.outputs.tag_name }}
+      - run: |
+          mv artifacts/linux-x64/codely artifacts/linux-x64/codely-linux-x64
+          mv artifacts/linux-arm64/codely artifacts/linux-arm64/codely-linux-arm64
+          mv artifacts/macos/codely artifacts/macos/codely-macos
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ steps.get_time.outputs.tag_name }}
+          tag_name: ${{ steps.get_time.outputs.tag_name }}
+          files: |
+            artifacts/linux-x64/codely-linux-x64
+            artifacts/linux-arm64/codely-linux-arm64
+            artifacts/windows/codely
+            artifacts/macos/codely-macos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,99 @@
+<div class="max-w-7xl w-full h-screen ml-auto mr-auto">
+    <div class="introduction ml-auto mr-auto pt-8 w-fit">
+        <h1 class="text-8xl w-fit">Codely</h1>
+        <p class="text-3xl w-fit"><i>Vibe coded or not?</i></p>
+    </div>
+
+    <div class="blocks flex w-full mt-8">
+        <%= for {code,idx} <- Enum.with_index(@codes) do %>
+            <div class="code-holder">
+                <%= raw Makeup.highlight(code, lexer: Makeup.Lexers.ElixirLexer) %>
+                <%= if @guessed do %>
+                    <button class="rounded-xl bg-gray-800 ml-auto mr-auto p-2 mt-2 w-[50%]">This is vibe coded</button>
+                <% else %>
+                    <button phx-click="guess" phx-value-idx={idx} class="rounded-xl bg-green-800 ml-auto mr-auto p-2 mt-2 w-[50%] hover:bg-green-800/75">This is vibe coded</button>
+                <% end %>
+                
+            </div>
+        <% end %>
+    </div>
+
+    <div class="result flex flex-col justify-center mt-32">
+        <%= if @guessed do %>
+            <%= if @result do %>
+                <h2 class="text-4xl font-semibold text-center">You are correct!</h2>
+                <p class="text-center">Maybe AI wont take your job after all</p>
+            <% else %>
+                <h2 class="text-4xl font-semibold text-center">You were fooled!</h2>
+                <p class="text-center">Don't worry, you're not the only one</p>
+            <% end %>
+       
+
+            <button phx-click="new" class="rounded-xl bg-green-600 ml-auto mr-auto p-2 mt-2 w-[50%] hover:bg-green-600/75">Next game</button>
+        <% end %>
+    </div>
+
+</div>
+
+
+
+<style>
+    .code-holder {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .highlight {
+        height: 100%;
+        overflow-x: scroll;
+        scrollbar-color: var(--color-gray-900) black;
+        background-color: var(--color-gray-900);
+        padding: 0.5em;
+        border-radius: 0.25em;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
+
+    .kn {
+        color: var(--color-pink-600);
+    }
+
+    .n {
+        color: var(--color-fuchsia-500);
+    }
+
+    .nc {
+        color: var(--color-yellow-300);
+    }
+
+    .kd {
+        color: var(--color-fuchsia-600);
+    }
+
+    .p {
+        color: var(--color-gray-300);
+    }
+
+    .nf {
+        color: var(--color-sky-500);
+    }
+
+    .mi {
+        color: var(--color-orange-300);
+    }
+
+    .s, .sc {
+        color: var(--color-green-400);
+    }
+
+    .c1 {
+        color: var(--color-gray-500);
+    }
+
+    .n {
+
+    }
+
+</style>
