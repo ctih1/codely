@@ -24,8 +24,8 @@ if config_env() == :prod do
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   config :codely, Codely.Repo,
-    database: System.get_env("DB_PATH") || "database.db",
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
+    database: System.get_env("DB_PATH") || "/app/database.db",
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "1")
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -54,6 +54,7 @@ if config_env() == :prod do
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
     ],
+    check_origin: false,
     secret_key_base: secret_key_base
 
   # ## SSL Support
