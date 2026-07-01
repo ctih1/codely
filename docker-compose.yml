@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      SECRET_KEY_BASE: "Tx8CTzU6iKRDZrvlTMrVUzXIQ9CsCaftXaQFlkOSKy5MgjBuC69G5dQGYt2cZTwF"
+      DB_PATH: "/app/data/database.db"
+      PHX_HOST: "192.168.32.88"
+    volumes:
+      # Mount the folder to BOTH /app/data and /app for absolute fallback compatibility
+      - ./data:/app/data
+      - ./data/database.db:/app/database.db
