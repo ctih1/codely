@@ -4,16 +4,15 @@
         <p class="text-3xl w-fit"><i>Vibe coded or not?</i></p>
     </div>
 
-    <div class="blocks flex w-full mt-8">
+    <div class="blocks flex-col md:flex-row flex w-full mt-8">
         <%= for {code,idx} <- Enum.with_index(@codes) do %>
-            <div class="code-holder">
+            <div class="code-holder md:w-1/2 w-full flex flex-col justify-center">
                 <%= raw Makeup.highlight(code, lexer: Makeup.Lexers.ElixirLexer) %>
                 <%= if @guessed do %>
                     <button class="rounded-xl bg-gray-800 ml-auto mr-auto p-2 mt-2 w-[50%]">This is vibe coded</button>
                 <% else %>
                     <button phx-click="guess" phx-value-idx={idx} class="rounded-xl bg-green-800 ml-auto mr-auto p-2 mt-2 w-[50%] hover:bg-green-800/75">This is vibe coded</button>
-                <% end %>
-                
+                <% end %>   
             </div>
         <% end %>
     </div>
@@ -21,10 +20,10 @@
     <div class="result flex flex-col justify-center mt-32">
         <%= if @guessed do %>
             <%= if @result do %>
-                <h2 class="text-4xl font-semibold text-center">You are correct!</h2>
-                <p class="text-center">Maybe AI wont take your job after all</p>
+                <h2 class="text-4xl font-semibold text-center">You were <span class="text-lime-100">correct!</span></h2>
+                <p class="text-center">Maybe AI wont take your job after all...</p>
             <% else %>
-                <h2 class="text-4xl font-semibold text-center">You were fooled!</h2>
+                <h2 class="text-4xl font-semibold text-center">You were <span class="text-red-100">fooled!</span></h2>
                 <p class="text-center">Don't worry, you're not the only one</p>
             <% end %>
        
@@ -38,13 +37,6 @@
 
 
 <style>
-    .code-holder {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
     .highlight {
         height: 100%;
         overflow-x: scroll;
