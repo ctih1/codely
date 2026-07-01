@@ -2,12 +2,7 @@ import Config
 
 # Configure your database
 config :codely, Codely.Repo,
-  username: System.get_env("DB_USER"),
-  password: System.get_env("DB_PASS"),
-  hostname: "localhost",
-  database: "codely_dev",
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
+  database: "database.db",
   pool_size: 10
 
 # For development, we disable any cache and enable
